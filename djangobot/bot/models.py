@@ -3,7 +3,7 @@ from django.db import models
 
 class User(models.Model):
     name = models.CharField(max_length=50, null=False)
-    login = models.CharField(max_length=50, null=False)
+    login = models.CharField(max_length=50, null=False, unique=True)
     psw = models.CharField(max_length=50, null=False)
 
 
@@ -30,5 +30,3 @@ class Message(models.Model):
     ]
     type = models.CharField(max_length=20, choices=MESSAGE_TYPE_CHOICES)
     text = models.TextField(max_length=4000)
-
-
