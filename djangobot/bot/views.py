@@ -1,25 +1,27 @@
 
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.models import AnonymousUser
 from django.db import IntegrityError
 from rest_framework import generics, status
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
-
 from .custom_auth import CustomJWTAuthentication
-from .models import Message, User
+from .models import User
 from .serialized import MessageSerializer, UserRegistrationSerializer, UserCheckSerializer
 from .utils import is_authenticate, create_token
 
 
 class HelloWorld(APIView):
     authentication_classes = [CustomJWTAuthentication]  # Используем ваш кастомный аутентификационный класс
-    permission_classes = [IsAuthenticated]  # Только аутентифицированные пользователи имеют доступ
-
     def get(self, request):
-        return Response({"message": "Hello, World!"})
-
+        user = request.user
+        if isinstance(user, AnonymousUser):
+            # Пользователь не был аутентифицирован
+            return Response({"message": "Доступ запрещен"}, status=status.HTTP_403_FORBIDDEN)
+        else:
+            # Пользователь успешно аутентифицирован
+            return Response({"message": f"Привет, {user.name}!"})
 
 class UsersHandler(generics.ListAPIView,
                    generics.UpdateAPIView,

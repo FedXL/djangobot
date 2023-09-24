@@ -20,10 +20,13 @@ class CustomJWTAuthentication(BaseAuthentication):
             print("payload",payload)
             user = User.objects.get(login=payload['login'])
             print(user)
+            print('SUCCESS!')
             return (user, None)
         except jwt.ExpiredSignatureError:
+            print('expired')
             raise AuthenticationFailed('Token has expired')
         except (jwt.DecodeError, User.DoesNotExist):
+            print('fail decoder')
             pass
         return None
 

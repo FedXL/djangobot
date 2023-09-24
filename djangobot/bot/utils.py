@@ -10,7 +10,7 @@ from djangobot.config import SECRET
 def create_token(login):
     payload = {
         'login': login,
-        'exp': int((datetime.utcnow() + timedelta(minutes=60)).timestamp()),  # Преобразуйте в timestamp
+        'exp': int((datetime.utcnow() + timedelta(days=1)).timestamp()),  # Преобразуйте в timestamp
         'iat': int(datetime.utcnow().timestamp()),  # Преобразуйте в timestamp
     }
     token = jwt.encode(payload, SECRET, algorithm='HS256')
