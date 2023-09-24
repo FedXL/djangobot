@@ -1,15 +1,22 @@
+
 from django.contrib.auth.hashers import check_password
 from django.db import IntegrityError
 from rest_framework import generics, status
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
+from .custom_auth import CustomJWTAuthentication
 from .models import Message, User
 from .serialized import MessageSerializer, UserRegistrationSerializer, UserCheckSerializer
+from .utils import is_authenticate, create_token
 
 
 class HelloWorld(APIView):
+    authentication_classes = [CustomJWTAuthentication]  # Используем ваш кастомный аутентификационный класс
+    permission_classes = [IsAuthenticated]  # Только аутентифицированные пользователи имеют доступ
+
     def get(self, request):
         return Response({"message": "Hello, World!"})
 
@@ -88,14 +95,25 @@ class AccessTokenObtainView(TokenObtainPairView):
         print(token)
         return Response({'answer': 'success', 'token': token})
 
-class CustomTokenObtainPairView(TokenObtainPairView):
-    username_field = 'login'
-    password_field = 'psw'
 
-class UserMessagesView(generics.ListAPIView):
-    serializer_class = MessageSerializer
+class JwtObrainView(generics.ListAPIView):
+    serializer_class = UserCheckSerializer
 
-    def get_queryset(self):
-        user_id = self.request.query_params.get('user_id')
-        queryset = Message.objects.filter(user_id=user_id)
-        return queryset
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        if not serializer.is_valid():
+            return Response({'answer': 'invalid input data'})
+        login = request.data.get('login')
+        psw = request.data.get('psw')
+        if is_authenticate(login,psw):
+            token = create_token(login)
+            return Response({'answer': 'success','access_token':token})
+
+
+# class UserMessagesView(generics.ListAPIView):
+#     serializer_class = MessageSerializer
+#
+#     def get_queryset(self):
+#         user_id = self.request.query_params.get('user_id')
+#         queryset = Message.objects.filter(user_id=user_id)
+#         return queryset

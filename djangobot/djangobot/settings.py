@@ -1,4 +1,3 @@
-from datetime import timedelta
 from pathlib import Path
 from .config import SECRET
 
@@ -21,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bot',
     'rest_framework',
-    'rest_framework_simplejwt',
+
 
 ]
 
@@ -57,27 +56,12 @@ WSGI_APPLICATION = 'djangobot.wsgi.application'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-        'djangobot.custom_auth.CustomDatabaseAuth',
+        'bot.custom_auth.CustomJWTAuthentication',
     ),
 }
 
 
-SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': None,
-    'SLIDING_TOKEN_LIFETIME': timedelta(days=1),
-    'SLIDING_TOKEN_REFRESH_VARIANT': None,
-    'SLIDING_TOKEN_REFRESH_ON_LOGIN': False,
-    'SLIDING_TOKEN_REFRESH_ON_REFRESH': False,
-    'ALGORITHM': 'HS256',
-    'SIGNING_KEY': SECRET_KEY,
-    'VERIFYING_KEY': None,
-    'AUTH_HEADER_TYPES': ('Bearer',),
-    'AUTHENTICATION_CLASSES': (
-        'djangobot.custom_auth.CustomDatabaseAuth',  # Путь к вашему классу аутентификации
-    ),
-}
+
 
 DATABASES = {
     'default': {

@@ -1,13 +1,13 @@
 from django.contrib import admin
 from django.urls import path
 
-from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
-from bot.views import UsersHandler, AccessTokenObtainView, CustomTokenObtainPairView
+
+from bot.views import UsersHandler, AccessTokenObtainView, JwtObrainView, HelloWorld
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/hello/',HelloWorld.as_view(),name='hello'),
     path('api/user/', UsersHandler.as_view(), name='user handler create/delete/update point'),
-    path('api/auth/', AccessTokenObtainView.as_view(), name='token_obtain_pair'),
-    path('api/auth2/',CustomTokenObtainPairView.as_view(),name='standart')
+    path('api/auth2/',JwtObrainView.as_view(),name='standart')
 
 ]
