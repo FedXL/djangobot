@@ -32,13 +32,12 @@ class UsersHandler(generics.ListAPIView,
             return Response({"answer": "data is invalid"})
 
     def update(self, request):
-        """поменять пароль или имя """
+        """change name or password """
         try:
             user = User.objects.get(login=request.data.get('login'))
         except User.DoesNotExist:
             return Response({'answer': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         serializer = self.serializer_class(user, data=request.data)
-
         if serializer.is_valid():
             try:
                 serializer.save()
@@ -49,6 +48,7 @@ class UsersHandler(generics.ListAPIView,
             return Response({"answer": "data is invalid"})
 
     def destroy(self, request):
+        """delete user"""
         try:
             user = User.objects.get(login=request.data.get('login'))
             user.delete()
@@ -57,6 +57,9 @@ class UsersHandler(generics.ListAPIView,
             return Response({'answer': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as ER:
             return Response({'answer': 'error cannot delete user'})
+
+class CreateToken(generics.ListAPIView):
+
 
 
 class UserMessagesView(generics.ListAPIView):

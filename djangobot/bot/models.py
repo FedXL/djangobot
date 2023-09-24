@@ -18,7 +18,6 @@ class TeleUser(models.Model):
     second_name = models.CharField(max_length=64, null=True)
     user_name = models.CharField(max_length=32, null=True)
     telegram_user_id = models.IntegerField(null=False)
-    code = models.IntegerField(null=False)
 
 
 class Message(models.Model):
