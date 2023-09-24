@@ -4,6 +4,7 @@ from .config import SECRET
 
 
 BASE_DIR = Path(__file__).resolve().parent.parent
+print("BASE_DIR",BASE_DIR)
 
 SECRET_KEY = SECRET
 
@@ -20,7 +21,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bot',
     'rest_framework',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+
 ]
 
 MIDDLEWARE = [
@@ -54,29 +56,28 @@ TEMPLATES = [
 WSGI_APPLICATION = 'djangobot.wsgi.application'
 
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
+    'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-
-    ],
+        'djangobot.custom_auth.CustomDatabaseAuth',
+    ),
 }
 
+
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(days=2),
-    'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=14),
-    'SLIDING_TOKEN_LIFETIME': timedelta(days=14),
-    'SLIDING_TOKEN_REFRESH_LIFETIME_GRACE_PERIOD': timedelta(days=2),
-    'SLIDING_TOKEN_REFRESH_SCOPE': None,
-    'SLIDING_TOKEN_LIFETIME_GRACE_PERIOD': None,
-    'ROTATE_REFRESH_TOKENS': False,
+    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_REFRESH_LIFETIME': None,
+    'SLIDING_TOKEN_LIFETIME': timedelta(days=1),
+    'SLIDING_TOKEN_REFRESH_VARIANT': None,
+    'SLIDING_TOKEN_REFRESH_ON_LOGIN': False,
+    'SLIDING_TOKEN_REFRESH_ON_REFRESH': False,
     'ALGORITHM': 'HS256',
     'SIGNING_KEY': SECRET_KEY,
     'VERIFYING_KEY': None,
     'AUTH_HEADER_TYPES': ('Bearer',),
-    'USER_ID_FIELD': 'id',
-    'USER_ID_CLAIM': 'user_id',
-    'AUTH_TOKEN_CLASSES': ('rest_framework_simplejwt.tokens.AccessToken',),
+    'AUTHENTICATION_CLASSES': (
+        'djangobot.custom_auth.CustomDatabaseAuth',  # Путь к вашему классу аутентификации
+    ),
 }
-
 
 DATABASES = {
     'default': {

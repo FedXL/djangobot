@@ -1,9 +1,12 @@
+from django.contrib.auth.hashers import check_password
 from django.db import IntegrityError
 from rest_framework import generics, status
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from rest_framework_simplejwt.views import TokenObtainPairView
+
 from .models import Message, User
-from .serialized import MessageSerializer, UserRegistrationSerializer
+from .serialized import MessageSerializer, UserRegistrationSerializer, UserCheckSerializer
 
 
 class HelloWorld(APIView):
@@ -58,9 +61,36 @@ class UsersHandler(generics.ListAPIView,
         except Exception as ER:
             return Response({'answer': 'error cannot delete user'})
 
-class CreateToken(generics.ListAPIView):
 
+class AccessTokenObtainView(TokenObtainPairView):
+    """authorization view class"""
+    serializer_class = UserCheckSerializer
 
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        print(serializer)
+        if not serializer.is_valid():
+            return Response({'error': 'invalid data'}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            user = User.objects.get(login=request.data['login'])
+        except User.DoesNotExist:
+            return Response({'answer': 'User is not found'}, status=status.HTTP_400_BAD_REQUEST)
+
+        password = serializer.validated_data.get('psw')
+        if not check_password(password, user.psw):
+            return Response({'answer': 'invalid password'}, status=status.HTTP_400_BAD_REQUEST)
+        print('start super')
+        print('request',request)
+        response = super().post(request)
+        print('response',response.data)
+        token = response.data.get('access')
+        print(token)
+        return Response({'answer': 'success', 'token': token})
+
+class CustomTokenObtainPairView(TokenObtainPairView):
+    username_field = 'login'
+    password_field = 'psw'
 
 class UserMessagesView(generics.ListAPIView):
     serializer_class = MessageSerializer
