@@ -15,6 +15,9 @@ class UserCheckSerializer(serializers.Serializer):
 
 
 
+
+
+
 class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User

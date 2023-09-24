@@ -1,5 +1,6 @@
 
 from django.db import models
+from django.utils import timezone
 
 
 class User(models.Model):
@@ -30,3 +31,4 @@ class Message(models.Model):
     ]
     type = models.CharField(max_length=20, choices=MESSAGE_TYPE_CHOICES)
     text = models.TextField(max_length=4000)
+    time = models.DateTimeField(default=timezone.now, blank=True)

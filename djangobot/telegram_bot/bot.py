@@ -2,15 +2,26 @@ import os
 import django
 import telebot
 
-from djangobot.bot.models import TeleUser
-from djangobot.djangobot.config import BOT_TOKEN
-
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "djangobot.settings")
 django.setup()
 
+from bot.models import TeleUser
+from djangobot.config import BOT_TOKEN
 
 API_TOKEN = BOT_TOKEN
-bot = telebot.TeleBot(API_TOKEN)
+bot = telebot.TeleBot(API_TOKEN, skip_pending=True)
+
+
+
+def send_message_to_bot(name, user_id, text):
+    message_text = (
+        f"{name} я получил от тебя сообщение.\n"
+        f"{text}"
+    )
+    bot.send_message(user_id,message_text,parse_mode='HTML')
+
+
+
 
 
 @bot.message_handler(commands=['start'])
@@ -44,6 +55,7 @@ def send_welcome(message):
     )
 
     bot.reply_to(message, message_text, parse_mode='HTML')
+
 
 
 def main():
