@@ -30,8 +30,8 @@ def send_welcome(message):
     if TeleUser.objects.filter(telegram_user_id=message.from_user.id).exists():
         code = TeleUser.objects.get(telegram_user_id=message.from_user.id).pk
     else:
-        TeleUser.objects.create(**user_data)
-        code = user_data['pk']
+        tele_user: TeleUser=TeleUser.objects.create(**user_data)
+        code = tele_user.pk
 
     if len(str(code)) < 4:
         str_code = str(code)
@@ -43,8 +43,8 @@ def send_welcome(message):
         str_code = str(code)
 
     message_text = (
-        f"Добро пожаловать 👋👋👋\n"
-        f"Ваш номер для регистрации в системе: <code>{str_code}</code>\n"
+        f"👋 Добро пожаловать {message.from_user.first_name} ! 👋\n"
+        f"Ваш номер для регистрации в системе:  👉 <code>{str_code}</code> 👈\n"
         f"Введите код в нашем сервисе для получения токена."
     )
 
