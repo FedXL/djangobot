@@ -1,0 +1,7 @@
+.idea
+venv
+*.sqlite3
+djangobot/djangobot/config.py
+*.pyc
+*.pyo
+__pycache__/

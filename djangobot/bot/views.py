@@ -9,11 +9,11 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from telegram_bot.bot import send_message_to_bot
+
 from .custom_auth import CustomJWTAuthentication
 from .models import User, TeleUser, Token
 from .serialized import MessageSerializer, UserRegistrationSerializer, UserCheckSerializer
-from .utils import is_authenticate, create_token
+from .utils import is_authenticate, create_token, get_user_by_bot_token, send_message_to_bot
 
 
 class HelloWorld(APIView):
@@ -144,7 +144,7 @@ class CabinetUserView(generics.CreateAPIView,
         return Response({"answer": "всякие сообщения и много иха"})
 
 
-class SendMessageView(APIView):
+class MessagesView(APIView):
     serializer_class = MessageSerializer
 
     def post(self, request):
@@ -152,9 +152,10 @@ class SendMessageView(APIView):
         if not serializer.is_valid():
             return Response({"answer":"message data is not valid"})
         token = request.data.get('token')
-        name,tele_user_id,user = read_token_info(token)
+        user, user_in_telegram = get_user_by_bot_token(token)
+        send_message_to_bot(name=user.name,
+                            user_id=user_in_telegram.telegram_user_id,
+                            text=serializer.validated_data.get('text'))
 
-        send_message_to_bot(name=name,
-                            user_id=user_id,
-                            text=text)
-
+    def get(self,request):
+        return Response({'answer': "all messages from user"})

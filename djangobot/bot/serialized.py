@@ -1,12 +1,16 @@
+from abc import ABC
+
 from django.contrib.auth.hashers import make_password
 from rest_framework import serializers
 from .models import User, Message
 
 
 class MessageSerializer(serializers.ModelSerializer):
+    bot_token = serializers.CharField(max_length=25, min_length=25, allow_blank=False)
+
     class Meta:
         model = Message
-        fields = '__all__'
+        fields = ('type', 'text', 'bot_token')
 
 
 class UserCheckSerializer(serializers.Serializer):

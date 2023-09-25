@@ -13,12 +13,6 @@ bot = telebot.TeleBot(API_TOKEN, skip_pending=True)
 
 
 
-def send_message_to_bot(name, user_id, text):
-    message_text = (
-        f"{name} я получил от тебя сообщение.\n"
-        f"{text}"
-    )
-    bot.send_message(user_id,message_text,parse_mode='HTML')
 
 
 
