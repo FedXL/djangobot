@@ -7,11 +7,14 @@ from .models import User, Message
 
 class MessageSerializer(serializers.ModelSerializer):
     bot_token = serializers.CharField(max_length=25, min_length=25, allow_blank=False)
-
     class Meta:
         model = Message
         fields = ('type', 'text', 'bot_token')
 
+class MessagesSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Message
+        fields = ('time','text','type')
 
 class UserCheckSerializer(serializers.Serializer):
     login = serializers.CharField(max_length=50)
